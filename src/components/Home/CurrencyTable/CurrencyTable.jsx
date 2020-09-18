@@ -6,9 +6,9 @@ import EditModal from './EditModal/EditModal';
 
 const CurrencyTable = () => {
   const dispatch = useDispatch();
-  const data = useSelector(state => state.currency);
+  const state = useSelector(state => state.currency);
   const [modal, setModal] = useState(false);
-  const [modalData, setModalData] = useState({});
+  const [modalData, setModalData] = useState();
   const [modalDisabled, setModalDisabled] = useState(false);
   const [modalValue, setModalValue] = useState(0);
 
@@ -20,6 +20,7 @@ const CurrencyTable = () => {
     setModal(false)
   };
   const checkValueModal = useCallback(() => {
+    if(!modalData) return;
     const value = +modalData[modalData.type]
     const min = +value - (value / 100 * 10);
     const max = +value + (value / 100 * 10);
@@ -45,11 +46,12 @@ const CurrencyTable = () => {
     currentItem[currentItem.type] = modalValue;
     delete currentItem.type;
     dispatch(setNewCurrency(currentItem));
+    setModal(false)
   }
 
   const renderTable = () => {
-    if (data.newCarrency) {
-      return data.newCarrency.map((item, index) => {
+    if (state.newCarrency) {
+      return state.newCarrency.map((item, index) => {
         return (
           <tr key={index}>
             <td>{`${item.ccy}/${item.base_ccy}`}</td>
@@ -76,13 +78,14 @@ const CurrencyTable = () => {
         </tbody>
       </Table>
       <EditModal
-        data={modalData}
-        show={modal}
-        handleClose={closeModal}
-        disabled={modalDisabled}
-        modalHandleChange={modalHandleChange}
-        saveValue={saveValue}
-      />
+          data={modalData}
+          defaultData={state.defaultCarrency}
+          show={modal}
+          handleClose={closeModal}
+          disabled={modalDisabled}
+          modalHandleChange={modalHandleChange}
+          saveValue={saveValue}
+        />
     </div>
   );
 };

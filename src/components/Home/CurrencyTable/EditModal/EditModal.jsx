@@ -3,12 +3,17 @@ import { Modal, Button, FormControl } from 'react-bootstrap';
 
 const EditModal = (props) => {
   const checkRange = () => {
-    let value = props.data[props.data.type];
-    const min = +value - (value / 100 * 10);
-    const max = +value + (value / 100 * 10);
+    if (props.defaultData && props.data) {
+      const currentData = props.defaultData.find(item => item.ccy === props.data.ccy);
+      let value = currentData[props.data.type];
+      const min = +value - (value / 100 * 10);
+      const max = +value + (value / 100 * 10);
 
-    return {
-      min, max
+      return {
+        min, max
+      }
+    } else {
+      return { min: 0, max: 0 }
     }
   }
   return (
